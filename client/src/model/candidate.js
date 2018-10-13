@@ -1,5 +1,6 @@
 class Candidate{
-    constructor(name,picture,votes){
+    constructor(index,name,picture,votes){
+        this.index = index;
         this.name = name;
         this.picture = picture;
         this.votes = votes;
