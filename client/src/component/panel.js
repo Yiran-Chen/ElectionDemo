@@ -25,9 +25,12 @@ class PanelComponent extends Component {
         event.preventDefault();
         if(this.props.contract){
             try{
-                let tx = await this.props.contract.voteTo.sendTransaction(this.state.candidateIndex,{value:this.state.value,from:this.props.accounts[0]});
+                if(!this.state.candidateIndex || !this.state.value){
+                    throw new Error("please select candidate and input value");
+                }
+                await this.props.contract.voteTo.sendTransaction(this.state.candidateIndex,{value:this.state.value,from:this.props.selectedAddress});
             } catch (error) {
-                alert(error)
+                alert(error.message)
             }
         }else{
             alert('Loading Web3, accounts, and contract...')

@@ -6,12 +6,29 @@ class CandidateComponent extends Component {
         votes: this.props.candidate.votes
     }
 
-    async componentDidMount() {
+     componentDidMount() {
         if (this.props.contract) {
-            let votes = await this.props.contract.totalVotes.call(this.props.candidate.index);
-            this.setState({votes:votes.valueOf()})
+            this.updateVotes();
+            this.props.contract.NewVote().watch((err,response)=>{
+                this.updateVotes();
+            })
         }
     }
+
+    async updateVotes(){
+        try {
+            const votes = await this.props.contract.totalVotes.call(this.props.candidate.index);
+            const votesAmount = await this.props.contract.votesAmount.call();
+            let percentage = 0;
+            if(!votesAmount.isZero()){
+                percentage = votes.dividedBy(votesAmount).times(100).toFixed(5)
+            }
+            this.setState({votes:votes.valueOf(),percentage:percentage})
+        }catch (e) {
+            alert(e)
+        }
+    }
+
     render() {
         return <div className="candidate">
             <img src={this.props.candidate.picture} alt={this.props.imageAlt}/>

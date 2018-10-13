@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 contract Election{
     enum Candidates {DonaldJohnTrump,HillaryDianeRodhamClinton}
     mapping(uint8 => uint) public totalVotes;
+    uint public votesAmount;
     event NewVote(
         uint8 indexed _to,
         uint indexed _votes
@@ -19,6 +20,7 @@ contract Election{
     function voteTo(uint8 _to) public payable toCandidate(_to){
         require(msg.value >0,'must send ether for voting');
         totalVotes[_to] += msg.value;
+        votesAmount += msg.value;
         emit NewVote(_to,msg.value);
     }
 }
